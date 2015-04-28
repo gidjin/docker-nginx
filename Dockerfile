@@ -13,6 +13,8 @@ ENV PATH=/root/gopath/bin:$PATH
 RUN go get github.com/tools/godep
 RUN go get github.com/kelseyhightower/confd
 RUN cd /root/gopath/src/github.com/kelseyhightower/confd && ./build && ./install && mkdir -p /etc/confd/{conf.d,templates}
+COPY start-up.sh /usr/local/bin/start-up.sh
+RUN chmod 755 /usr/local/bin/start-up.sh
 
 RUN apt-get clean &&\
     rm -rf /tmp/* /var/tmp/* &&\
@@ -28,4 +30,4 @@ VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
 
-CMD ["nginx", "-g", "daemon off"]
+CMD ["start-up.sh"]
