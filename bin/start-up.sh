@@ -23,6 +23,8 @@ echo "[nginx] booting container. ETCD: $ETCD."
 # for changes every $CONFIG_REFRESH seconds
 # confd -interval $CONFIG_REFRESH -node $ETCD > /var/log/confd.log 2>&1 &
 # echo "[nginx] confd is now monitoring etcd for changes..."
+echo "[nginx] etcd updater is now updating etcd with changes..."
+etcd_updater_service.rb
 
 # Start the Nginx service using the generated config
 echo "[nginx] starting nginx service..."

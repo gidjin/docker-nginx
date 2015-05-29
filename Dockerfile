@@ -4,17 +4,19 @@ MAINTAINER John Gedeon <js1@gedeons.com>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update &&\
     apt-get -y upgrade &&\
-    apt-get -y install ca-certificates nginx-light ruby git golang &&\
+    apt-get -y install ca-certificates nginx-light ruby git golang wget &&\
     gem install bundler
 
+USER root
 ENV HOME=/root
-ENV GOPATH=/root/gopath
-ENV PATH=/root/gopath/bin:$PATH
-RUN go get github.com/tools/godep
-RUN go get github.com/kelseyhightower/confd
-RUN cd /root/gopath/src/github.com/kelseyhightower/confd && ./build && ./install && mkdir -p /etc/confd/{conf.d,templates}
-COPY start-up.sh /usr/local/bin/start-up.sh
-RUN chmod 755 /usr/local/bin/start-up.sh
+WORKDIR /root
+RUN wget https://github.com/kelseyhightower/confd/releases/download/v0.9.0/confd-0.9.0-linux-amd64
+RUN mv confd-0.9.0-linux-amd64 /usr/local/bin/confd && chmod 755 /usr/local/bin/confd
+RUN gem install daemons faraday
+RUN mkdir -p /etc/confd/{conf.d,templates}
+COPY bin/* /usr/local/bin/
+RUN chmod 755 /usr/local/bin/*
+COPY lib/* /root/
 
 RUN apt-get clean &&\
     rm -rf /tmp/* /var/tmp/* &&\
