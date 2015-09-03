@@ -1,4 +1,4 @@
-FROM debian:testing
+FROM debian:jessie
 MAINTAINER John Gedeon <js1@gedeons.com>
 
 ENV DEBIAN_FRONTEND=noninteractive
