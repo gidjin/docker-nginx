@@ -12,14 +12,12 @@ class EtcdUpdater
     end
 
     @container_ip = `hostname --ip`.chomp!
-    @hostname = `hostname`.chomp!
     @name = ENV["NAME"] || nil
 
     raise "No container ip" unless @container_ip
-    raise "No service name set" unless @name
     raise "No hostname set" unless @hostname
 
-    @path = "/v2/keys/services"
+    @path = "/v2/keys/services/web"
     @path += "/#{@name}" if @name
     @path += "/#{@hostname}"
   end
