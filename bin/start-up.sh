@@ -3,9 +3,6 @@
 # un-official strict mode
 set -euo pipefail
 
-export ETCD_PORT=${ETCD_PORT:-4001}
-export HOST_IP=${HOST_IP:-172.17.42.1}
-export ETCD=$HOST_IP:$ETCD_PORT
 export CONFIG_REFRESH=${CONFIG_REFRESH:-300}
 
 echo "[nginx] booting container. ETCD: $ETCD."
@@ -23,12 +20,15 @@ echo "[nginx] booting container. ETCD: $ETCD."
 # for changes every $CONFIG_REFRESH seconds
 # confd -interval $CONFIG_REFRESH -node $ETCD > /var/log/confd.log 2>&1 &
 # echo "[nginx] confd is now monitoring etcd for changes..."
+
+# # Start the Nginx service using the generated config
+# echo "[nginx] starting nginx service..."
+# # stop nginx started by debian so we can start here in foreground
+# service nginx stop
+
 echo "[nginx] etcd updater is now updating etcd with changes..."
 etcd_updater_service.rb start
 
-# Start the Nginx service using the generated config
-echo "[nginx] starting nginx service..."
-# stop nginx started by debian so we can start here in foreground
-service nginx stop
 # start nginx in foreground
+echo "[nginx] nginx starting..."
 nginx -g "daemon off;"
